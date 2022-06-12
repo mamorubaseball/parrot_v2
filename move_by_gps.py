@@ -16,7 +16,7 @@ DRONE_SERIAL = os.environ.get("DRONE_SERIAL", "000000")
 
 def move_to(drone):
     assert drone(TakeOff()).wait().success()
-    df = pd.read_csv('lat_lon_10data.csv')
+    df = pd.read_csv('CSV/lat_lon_10data.csv')
     for index,rows in df.iterrows():
         lat = rows.lat
         lon = rows.lon
