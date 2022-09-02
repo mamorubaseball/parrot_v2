@@ -128,7 +128,6 @@ def take_photo(drone):
     assert drone.media(
         indexing_state(state="indexed")
     ).wait(_timeout=60).success()
-    set_gimbal(drone,math.pi/4)
     setup_photo_burst_mode(drone)
     take_photo_burst(drone)
     drone.disconnect()

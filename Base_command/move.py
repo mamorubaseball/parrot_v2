@@ -18,14 +18,12 @@ def main():
 def Left(d):
     drone = olympe.Drone(DRONE_IP)
     drone.connect()
-    drone(moveBy(0,d, 0, 0)
-              >> FlyingStateChanged(state="hovering", _timeout=3)).wait().success()
+    drone(moveBy(0,-d,0, 0)).wait().success()
 
 def Right(d):
     drone = olympe.Drone(DRONE_IP)
     drone.connect()
-    drone(moveBy(0,d, 0, 0)
-              >> FlyingStateChanged(state="hovering", _timeout=3)).wait().success()
+    drone(moveBy(0,d, 0, 0)).wait().success()
 
 def Down(h):
     drone = olympe.Drone(DRONE_IP)
