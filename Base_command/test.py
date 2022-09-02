@@ -15,9 +15,13 @@ def main():
     drone.connection()
     assert drone(TakeOff()
         >> FlyingStateChanged(state="hovering", _timeout=5)).wait().success()
-    Down(-2)
-    Landing()
 
+    time.sleep(3)
+
+    drone(moveBy(0,0, -2, 0)
+        >> FlyingStateChanged(state="hovering", _timeout=3)).wait().success()
+    assert drone(Landing()).wait().success()
+    
 if __name__ == "__main__":
     main()
 
