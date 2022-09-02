@@ -79,7 +79,7 @@ def get_direction(lat1,log1,lat2,log2):
 
 def p0_goal():
     drone = olympe.Drone("192.168.42.1")
-    drone.connection()
+    drone.connect()
     assert drone(TakeOff()
         >> FlyingStateChanged(state="hovering", _timeout=5)).wait().success()
     #p0に向かう
@@ -109,7 +109,7 @@ def p0_goal():
 #ドローンの現在GPSと目標GPSのずれを計算して実行する
 def main():
     drone = olympe.Drone("192.168.42.1")
-    drone.connection()
+    drone.connect()
     assert drone(TakeOff()
         >> FlyingStateChanged(state="hovering", _timeout=5)).wait().success()
     
@@ -129,7 +129,7 @@ def main():
 #ドローンが実行するコマンドを用意して制御する
 def main_command():
     drone = olympe.Drone("192.168.42.1")
-    drone.connection()
+    drone.connect()
     assert drone(TakeOff()
         >> FlyingStateChanged(state="hovering", _timeout=5)).wait().success()
     

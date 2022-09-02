@@ -1,3 +1,5 @@
+from cmath import pi
+from dataclasses import _DefaultFactory
 from olympe.messages.camera import (
     set_camera_mode,
     set_photo_mode,
@@ -11,6 +13,8 @@ import os
 import re
 import tempfile
 import xml.etree.ElementTree as ET
+from olympe.messages import gimbal
+import math
 
 DRONE_IP = "192.168.42.1"
 SKYCTRL_IP = "192.168.53.1"
@@ -107,16 +111,27 @@ def setup_photo_burst_mode(drone):
         )
     ).wait().success()
 
+def set_gimbal(drone,angle):
+    drone(gimbal.set_target(
+    gimbal_id=0,
+    control_mode="position",
+    yaw_frame_of_reference="none",   # None instead of absolute
+    yaw=0.0,
+    pitch_frame_of_reference="absolute",
+    pitch=-angle,
+    roll_frame_of_reference="none",     # None instead of absolute
+    roll=0.0,
+)).wait()
 
 def take_photo(drone):
     drone.connect()
     assert drone.media(
         indexing_state(state="indexed")
     ).wait(_timeout=60).success()
+    set_gimbal(drone,math.pi/4)
     setup_photo_burst_mode(drone)
     take_photo_burst(drone)
     drone.disconnect()
-
 
 if __name__ == "__main__":
     take_photo()
