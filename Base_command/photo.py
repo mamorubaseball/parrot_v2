@@ -123,7 +123,7 @@ def set_gimbal(drone,angle):
     roll=0.0,
 )).wait()
 
-def take_photo(drone):
+def photo(drone):
     drone.connect()
     assert drone.media(
         indexing_state(state="indexed")
@@ -134,4 +134,6 @@ def take_photo(drone):
     drone.disconnect()
 
 if __name__ == "__main__":
-    take_photo()
+    DRONE_IP = os.environ.get("DRONE_IP", "192.168.42.1")
+    drone = olympe.Drone(DRONE_IP)
+    photo(drone)

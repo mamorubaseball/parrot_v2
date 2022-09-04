@@ -49,6 +49,8 @@ def get_state():
     print("GPS position after take-off : ", drone.get_state(PositionChanged))
     drone.disconnect()
 
+# https://forum.developer.parrot.com/t/get-gps-position-before-the-take-off/9432/3
+# 
 if __name__ == "__main__":
     # test_take_photo()
     get_state()
