@@ -1,17 +1,20 @@
 # -*- coding: UTF-8 -*-
 import olympe
-import time
 from olympe.messages.ardrone3.Piloting import TakeOff, Landing
-import os
 from olympe.messages.ardrone3.Piloting import moveBy
 from olympe.messages.ardrone3.PilotingState import FlyingStateChanged
-from move import *
-from photo import photo
 from olympe.messages.move import extended_move_to
 from olympe.messages.ardrone3.PilotingState import PositionChanged,FlyingStateChanged
 from olympe.messages.ardrone3.GPSSettingsState import GPSFixStateChanged
 from olympe.messages.ardrone3.Piloting import TakeOff
 from olympe.messages.ardrone3.GPSSettingsState import HomeChanged
+
+from move import *
+from photo import photo
+import time
+import os
+import csv
+
 
 DRONE_IP = os.environ.get("DRONE_IP", "192.168.42.1")
 
@@ -48,14 +51,21 @@ def get_state():
     drone = olympe.Drone(DRONE_IP)
     drone.connect()
     assert drone(TakeOff()).wait().success()
-    
+    GPS =[]
     # getGPS
     drone(GPSFixStateChanged(_policy = 'wait'))
     print("======GPS position before move : ", drone.get_state(PositionChanged))
+    GPS.append(drone.get_state(PositionChanged))
     drone(moveBy(1,0, 0, 0)).wait().success()
     # getGPS
     drone(GPSFixStateChanged(_policy = 'wait'))
     print("=======GPS position after move : ", drone.get_state(PositionChanged))
+    GPS.append(drone.get_state(PositionChanged))
+    with open('CSV/gps.csv', 'w') as f:
+        writer = csv.writer(f)
+        print(GPS)
+        writer.writerow(GPS)
+
     assert drone(Landing()).wait().success()
     drone.disconnect()
 
