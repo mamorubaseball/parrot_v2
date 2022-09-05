@@ -1,5 +1,4 @@
 from cmath import pi
-from dataclasses import _DefaultFactory
 from olympe.messages.camera import (
     set_camera_mode,
     set_photo_mode,
@@ -118,7 +117,7 @@ def set_gimbal(drone,angle):
     yaw_frame_of_reference="none",   # None instead of absolute
     yaw=0.0,
     pitch_frame_of_reference="absolute",
-    pitch=-angle,
+    pitch=angle,
     roll_frame_of_reference="none",     # None instead of absolute
     roll=0.0,
 )).wait()

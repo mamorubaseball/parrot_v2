@@ -123,14 +123,14 @@ def set_gimbal(drone,angle):
     roll=0.0,
 )).wait()
 
-def take_photo(drone):
-    drone.connect()
+def _take_photo(drone):
+    # drone.connect()
     assert drone.media(
         indexing_state(state="indexed")
     ).wait(_timeout=60).success()
     setup_photo_burst_mode(drone)
     take_photo_burst(drone)
-    drone.disconnect()
+    # drone.disconnect()
 
 if __name__ == "__main__":
-    take_photo()
+    _take_photo()

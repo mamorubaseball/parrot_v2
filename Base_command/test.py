@@ -7,7 +7,7 @@ import os
 from olympe.messages.ardrone3.Piloting import moveBy
 from olympe.messages.ardrone3.PilotingState import FlyingStateChanged
 from move import *
-from photo import take_photo
+from photo import _take_photo
 from olympe.messages.move import extended_move_to
 from olympe.messages.ardrone3.PilotingState import PositionChanged
 from olympe.messages.ardrone3.GPSSettingsState import HomeChanged
@@ -26,7 +26,7 @@ def test_take_photo():
     drone = olympe.Drone("192.168.42.1")
     drone.connect()
     assert drone(TakeOff()).wait().success()
-    take_photo()
+    _take_photo(drone)
     time.sleep(3)
     assert drone(Landing()).wait().success()
 
@@ -52,8 +52,8 @@ def get_state():
 # https://forum.developer.parrot.com/t/get-gps-position-before-the-take-off/9432/3
 # 
 if __name__ == "__main__":
-    # test_take_photo()
-    get_state()
+    test_take_photo()
+    # get_state()
 
 
 
