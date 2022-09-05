@@ -45,7 +45,11 @@ def move_to():
 def get_state():
     drone = olympe.Drone(DRONE_IP)
     drone.connect()
-    assert drone(TakeOff() >> FlyingStateChanged(state="hovering", _timeout=5)).wait().success()
+    # assert drone(TakeOff() >> FlyingStateChanged(state="hovering", _timeout=5)).wait().success()
+    assert drone(
+        FlyingStateChanged(state="hovering")
+                | (TakeOff() & FlyingStateChanged(state="hovering"))
+        ).wait(5).success()
     drone(moveBy(1,0, 0, 0)).wait().success()
     # print("Drone = ", drone.get_state())
     print("GPS position after take-off : ", drone.get_state(FlyingStateChanged))
