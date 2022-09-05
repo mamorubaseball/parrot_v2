@@ -35,17 +35,37 @@ def test_take_photo():
     os.system('python3 photo.py')
     assert drone(Landing()).wait().success()
 
-def move_to():
+def move_to_get_gps():
     #家の近く:
     # 小金井公園の椅子があるとこ： 35.71628807725536, 139.5167523197069
-    #大学の中庭にある木の左側：35.70986876013675, 139.52304838602245
-    GPS=[35.615429, 139.299958]
-
+    #大学の中庭にある木の左側：35.70986171406717, 139.52302521204703
+    GPS=[35.70986171406717, 139.52302521204703]
+    GPS_DATA=[]
     drone = olympe.Drone("192.168.42.1")
     drone.connect()
+
     assert drone(TakeOff()).wait().success()
+
+    # getGPS
+    drone(GPSFixStateChanged(_policy = 'wait'))
+    GPS_DATA.append(drone.get_state(PositionChanged))
+
+
     # 飛行プログラム開始
-    drone(extended_move_to(GPS[0],GPS[1],0)).wait().success()
+    drone(extended_move_to(GPS[0],GPS[1],2)).wait().success()
+    drone(GPSFixStateChanged(_policy = 'wait'))
+    GPS_DATA.append(drone.get_state(PositionChanged))
+
+    drone(moveBy(1,0, 0, 0)).wait().success()
+    drone(GPSFixStateChanged(_policy = 'wait'))
+    GPS_DATA.append(drone.get_state(PositionChanged))
+    with open('gps.csv', 'w') as f:
+        writer = csv.writer(f)
+        writer.writerow(GPS)
+
+    drone(Landing()).wait().success()
+
+
 
 def get_state():
     drone = olympe.Drone(DRONE_IP)
@@ -61,11 +81,9 @@ def get_state():
     drone(GPSFixStateChanged(_policy = 'wait'))
     print("=======GPS position after move : ", drone.get_state(PositionChanged))
     GPS.append(drone.get_state(PositionChanged))
-    with open('CSV/gps.csv', 'w') as f:
+    with open('gps.csv', 'w') as f:
         writer = csv.writer(f)
-        print(GPS)
         writer.writerow(GPS)
-
     assert drone(Landing()).wait().success()
     drone.disconnect()
 
@@ -87,5 +105,6 @@ def get_state_v2():
 
 # https://forum.developer.parrot.com/t/get-gps-position-before-the-take-off/9432/3
 if __name__ == "__main__":
-    test_take_photo()
+    # test_take_photo()
     # get_state()
+    move_to_get_gps()
