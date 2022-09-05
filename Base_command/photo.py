@@ -134,9 +134,10 @@ def photos(drone):
 
 def photo(drone):
     drone.connect()
-    assert drone.media(
-        indexing_state(state="indexed")
-    ).wait(_timeout=60).success()
+    setup_photo_burst_mode(drone)
+    # assert drone.media(
+    #     indexing_state(state="indexed")
+    # ).wait(_timeout=60).success()
     drone(take_photo(cam_id=0)).wait().success()
     drone.disconnect()
 
