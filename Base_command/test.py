@@ -47,23 +47,22 @@ def move_to():
 def get_state():
     drone = olympe.Drone(DRONE_IP)
     drone.connect()
-    # assert drone(TakeOff() >> FlyingStateChanged(state="hovering", _timeout=5)).wait().success()
-    assert drone(
-        FlyingStateChanged(state="hovering")
-                | (TakeOff() & FlyingStateChanged(state="hovering"))
-        ).wait(5).success()
+    assert drone(TakeOff()).wait().success()
+    
+    # getGPS
+    drone(GPSFixStateChanged(_policy = 'wait'))
+    print("======GPS position before move : ", drone.get_state(PositionChanged))
     drone(moveBy(1,0, 0, 0)).wait().success()
-    # print("Drone = ", drone.get_state())
-    print("GPS position after take-off : ", drone.get_state(FlyingStateChanged))
-    print("GPS position after take-off : ", drone.get_state(PositionChanged))
+    # getGPS
+    drone(GPSFixStateChanged(_policy = 'wait'))
+    print("=======GPS position after move : ", drone.get_state(PositionChanged))
     assert drone(Landing()).wait().success()
     drone.disconnect()
 
 def get_state_v2():
     # Connection
-    drone = olympe.Drone("10.202.0.1")
-    drone.connection()
-
+    drone = olympe.Drone("192.168.42.1")
+    drone.connect()
     # Wait for GPS fix
     drone(GPSFixStateChanged(_policy = 'wait'))
 
@@ -74,7 +73,7 @@ def get_state_v2():
 
     print("GPS position after take-off : ", drone.get_state(PositionChanged))
 
-    drone.disconnection()
+    drone.disconnect()
 
 # https://forum.developer.parrot.com/t/get-gps-position-before-the-take-off/9432/3
 if __name__ == "__main__":
