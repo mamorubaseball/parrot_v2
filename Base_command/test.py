@@ -52,11 +52,18 @@ def move_to_get_gps():
 
 
     # 飛行プログラム開始
-    drone(extended_move_to(GPS[0],GPS[1],2)).wait().success()
+    # drone(extended_move_to(GPS[0],GPS[1],2,0,0,1.0,1.0,1.0)).wait()
+    assert drone(
+        moveBy(1, 0, 0, 0)
+        >> FlyingStateChanged(state="hovering", _timeout=5)
+    ).wait().success()
     drone(GPSFixStateChanged(_policy = 'wait'))
     GPS_DATA.append(drone.get_state(PositionChanged))
 
-    drone(moveBy(1,0, 0, 0)).wait().success()
+    assert drone(
+        moveBy(-1, 0, 0, 0)
+        >> FlyingStateChanged(state="hovering", _timeout=5)
+    ).wait().success()
     drone(GPSFixStateChanged(_policy = 'wait'))
     GPS_DATA.append(drone.get_state(PositionChanged))
     with open('gps.csv', 'w') as f:
