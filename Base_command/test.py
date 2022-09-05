@@ -25,10 +25,9 @@ def test_take_photo():
     drone = olympe.Drone("192.168.42.1")
     drone.connect()
     assert drone(TakeOff()).wait().success()
-    photo(drone)
+    os.system('python3 photo.py')
     drone(moveBy(1,0, 0, 0)).wait().success()
-    photo(drone)
-    time.sleep(3)
+    os.system('python3 photo.py')
     assert drone(Landing()).wait().success()
 
 def move_to():
