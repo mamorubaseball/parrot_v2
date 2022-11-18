@@ -39,18 +39,15 @@ def move_to_get_gps():
     #家の近く:
     # 小金井公園の椅子があるとこ： 35.71628807725536, 139.5167523197069
     #大学の中庭にある木の左側：35.70986171406717, 139.52302521204703
-    GPS=[35.70986171406717, 139.52302521204703]
+    #大学の中庭の木の左側にある、木造廊下みたいなところ：35.70988890553087, 139.52309649266317
+    GPS=[35.70988890553087, 139.52309649266317]
     GPS_DATA=[]
     drone = olympe.Drone("192.168.42.1")
     drone.connect()
-
     assert drone(TakeOff()).wait().success()
-
     # getGPS
     drone(GPSFixStateChanged(_policy = 'wait'))
     GPS_DATA.append(drone.get_state(PositionChanged))
-
-
     # 飛行プログラム開始
     # drone(extended_move_to(GPS[0],GPS[1],2,0,0,1.0,1.0,1.0)).wait()
     assert drone(
@@ -71,8 +68,6 @@ def move_to_get_gps():
         writer.writerow(GPS)
 
     drone(Landing()).wait().success()
-
-
 
 def get_state():
     drone = olympe.Drone(DRONE_IP)
@@ -100,18 +95,36 @@ def get_state_v2():
     drone.connect()
     # Wait for GPS fix
     drone(GPSFixStateChanged(_policy = 'wait'))
-
     print("GPS position before take-off :", drone.get_state(HomeChanged))
-    
     # Take-off
     drone(TakeOff()).wait()
-
     print("GPS position after take-off : ", drone.get_state(PositionChanged))
-
     drone.disconnect()
+
+#GPSデータを参照して飛行
+def move_to():
+    GPS=[35.70988890553087, 139.52309649266317]
+    drone = olympe.Drone("192.168.42.1")
+    drone.connect()
+    # 飛行プログラム開始
+    drone(extended_move_to(GPS[0],GPS[1],2,0,0,1.0,1.0,1.0)).wait()
+
+def move_by():
+    drone = olympe.Drone("192.168.42.1")
+    drone.connect()
+    # Take-off
+    drone(TakeOff()).wait()
+    #右に1m
+    drone(moveBy(0,1, 0, 0)).wait().success()
+    drone(moveBy(0,-1, 0, 0)).wait().success()
+    drone(moveBy(1,0, 0, 0)).wait().success()
+    drone(moveBy(-1,0, 0, 0)).wait().success()
+    assert drone(Landing()).wait().success()
 
 # https://forum.developer.parrot.com/t/get-gps-position-before-the-take-off/9432/3
 if __name__ == "__main__":
-    # test_take_photo()
     # get_state()
-    move_to_get_gps()
+    move_by()
+    # move_to()
+    # test_take_photo()
+    # move_to_get_gps()
